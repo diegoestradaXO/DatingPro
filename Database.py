@@ -33,8 +33,46 @@ class Database(object):
             for node in nodes:
                 results.append(node) #Adds all the matching nodes, meaning that if len(results) > 0, there's at least one match
             return results
-     
-        
+
+    def verifyExistence(self, nodeType, param):
+        if(nodeType == "Music"):
+            results=[]
+            matchQuery = "MATCH (m:Music {type: '" + param + "'}) RETURN m"
+                # Execute the CQL query
+            with self._driver.session() as graphDB_Session:
+                nodes = graphDB_Session.run(matchQuery)
+                for node in nodes:
+                    results.append(node) #Adds all the matching nodes, meaning that if len(results) > 0, there's at least one match
+                return results
+        if(nodeType == "Movie"):
+            results=[]
+            matchQuery = "MATCH (p:Movie {type: '" + param + "'}) RETURN p"
+                # Execute the CQL query
+            with self._driver.session() as graphDB_Session:
+                nodes = graphDB_Session.run(matchQuery)
+                for node in nodes:
+                    results.append(node) #Adds all the matching nodes, meaning that if len(results) > 0, there's at least one match
+                return results
+        if(nodeType == "Food"):
+            results=[]
+            matchQuery = "MATCH (f:Food {type: '" + param + "'}) RETURN f"
+                # Execute the CQL query
+            with self._driver.session() as graphDB_Session:
+                nodes = graphDB_Session.run(matchQuery)
+                for node in nodes:
+                    results.append(node) #Adds all the matching nodes, meaning that if len(results) > 0, there's at least one match
+                return results
+        if(nodeType == "City"):
+            results=[]
+            matchQuery = "MATCH (c:City {name: '" + param + "'}) RETURN c"
+                # Execute the CQL query
+            with self._driver.session() as graphDB_Session:
+                nodes = graphDB_Session.run(matchQuery)
+                for node in nodes:
+                    results.append(node) #Adds all the matching nodes, meaning that if len(results) > 0, there's at least one match
+                return results
+
+
             
     @staticmethod
     def _Default(tx,result):
