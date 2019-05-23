@@ -157,6 +157,27 @@ class Database(object):
             tx.run("MATCH (a:User) WHERE a.name = $param1 "
                     "MERGE (b:City {name: $param2})"
                     "MERGE (a)-[:LIVES_IN]->(b)",
-                    param1=param1,param2=param2)                
+                    param1=param1,param2=param2)
+        
+        
+        		# Funcion que crea las relaciones segun las opciones elegidas
+		def match(user):
+			result = tx.run("match (:User {name:$user})--(ciudad:City)"
+					"match (:User {name:$user})--(comida:Food)"
+					"match (:User {name:$user})--(musica:Music)"
+					"return ciudad,comida,musica",
+					user=user)
+
+			comida = result[1]
+			ciudad = result[0]
+			musica = result[2]
+
+			# Devuelve las relaciones segun la ciudad, comida y musica 
+			tx.run("match (musica:Music)--(persona:User) where musica.genre = $var1 "
+					"match (comida:Food)--(persona:User) where comida.typeOfFood = $var2"
+					"optional match (ciudad:City)--(persona:User) where ciudad.City = $var3"
+				    "return persona.name,persona.num",
+					var1=musica,var2=comida,var3=ciudad)
+
              
 
