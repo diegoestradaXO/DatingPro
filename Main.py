@@ -14,7 +14,7 @@ db = Database("bolt://localhost:7687", "neo4j","password")
 login = True
 loginOptions = [1,2,3]
 while login:
-    try:
+ #   try:
         print("""
 =========================================================    
 |    ____        __  _                   ____           |
@@ -45,7 +45,7 @@ while login:
                     logged = True
                     loggedOptions = [1,2,3]
                     while logged:
-                        try:
+                       # try:
                             print("""
 =========================================================
 | _____                _____     _         _         _  |
@@ -69,7 +69,7 @@ while login:
                                 elif(option == "3"):
                                     print("Cerrando sesión...")
                                     logged = False      
-                        except:
+                       # except:
                             print("Entrada ivalida...")              
                 else:
                     print("Nombre de usuario y/o contraseña incorrecta...")    
@@ -107,7 +107,7 @@ while login:
                         chose = True  
                 musicGenres = ["Rock","Reggaetón","RnB","Clásica","Electrónica","Cumbia","Hip Hop"]
                 print(">> De las siguientes opciones, ¿Qué musica prefieres?")
-                counter = 0
+                counter = 1
                 for i in musicGenres:
                     print("     " + str(counter) + ". " + i)
                     counter += 1
@@ -118,32 +118,58 @@ while login:
                         musicGenre = input(">> Escoge un género de música: ")
                     if(musicGenre in musicGenres):
                         chose = True
-                movieGenres = ["Acción","Terror","Tragedia","Comedia","Drama","Superhéroes"]
-                print(">> De las siguientes opciones, ¿Qué tipo de películas prefieres?")
-                counter = 0
-                for i in movieGenres:
-                    print("     " + str(counter) + ". " + i)
-                    counter += 1
-                chose = False
-                while(chose == False):
-                    movieGenre = ""
-                    while(movieGenre == ""):
-                        movieGenre = input(">> Escoge un género de música: ")
-                    if(movieGenre in movieGenres):
-                        chose = True
+               # movieGenres = ["Acción","Terror","Tragedia","Comedia","Drama","Superhéroes"]
+                #print(">> De las siguientes opciones, ¿Qué tipo de películas prefieres?")
+                #counter = 1
+                #for i in movieGenres:
+                 #   print("     " + str(counter) + ". " + i)
+                  #  counter += 1
+                #chose = False
+                #while(chose == False):
+                 #   movieGenre = ""
+                  #  while(movieGenre == ""):
+                   #     movieGenre = input(">> Escoge un género de música: ")
+                    #if(movieGenre in movieGenres):
+                     #   chose = True
                 city = ""
                 while(city == ""):
                     city = input(">> ¿En qué ciudad vives?: ")
                 
-
-                # Despues de la recoleccion de datos, se procede a crear el usuario
-                #db.add_user(name,user,password,age,num)
-                #print("Ya lo agregue broco!")
+                db.add_user(name,user,password,age,num)
+                print("Ya lo agregue broco!")
                 #Verificar que los tipos de comida, pelicula, musica y ciudad existan, si no existen crea el nodo, de lo contrario los une             
-                    
+                if(len(db.verifyExistence("Food",food)) > 0):
+                    db.match_food(name, food)
+                    print("relacion creada")
+                else:
+                    db.make_a_match("userToFood",name, food)
+                    print("comida creada")
+                
+                if(len(db.verifyExistence("Music",musicGenre)) > 0):
+                    db.match_music(name, musicGenre)
+                    print("relacion creada")
+                else:
+                    db.make_a_match("userToMusic",name, musicGenre)
+                    print("musica creada")
+
+               # if(len(db.verifyExistence("Movie",movieGenre)) > 0):
+                #    db.make_a_match("userToMovie",user, movieGenre)
+                 #   print("relacion creada")
+                #else:
+                 #   db.add_movie(movieGenre)
+                  #  db.make_a_match("userToMovie",user, movieGenre)
+                   # print("pelicula creada")
+                
+                if(len(db.verifyExistence("City",city)) > 0):
+                    db.match_city(name, city)
+                    print("relacion creada")
+                else:
+                    db.make_a_match("userToCity",name, city)
+                    print("Ciudad creada")
+
             elif(option == "3"):
                 print("Hola 3")        
                 login = False
-    except:
-        print("Entrada invalida...")    
+    #except:
+     #   print("Entrada invalida...")    
 

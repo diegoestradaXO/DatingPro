@@ -15,6 +15,32 @@ class Database(object):
     #Cierra la base de datos
     def close(self):
         self._driver.close()
+    def user_to_food(cls, tx, param1, param2):
+        tx.run("MATCH (a:User) WHERE a.name = $param1 "
+                "MATCH (b:Food) WHERE b.typeOfFood = $param2 "
+                "MERGE (a)-[:LIKES]->(b)",
+            param1=param1, param2=param2)
+    def match_food(self, param1,  param2):
+         with self._driver.session() as session:
+             return session.write_transaction(self.user_to_food, param1, param2)
+
+    def user_to_city(cls, tx, param1, param2):
+        tx.run("MATCH (a:User) WHERE a.name = $param1 "
+                "MATCH (b:City) WHERE b.name = $param2 "
+                "MERGE (a)-[:LIVES_IN]->(b)",
+            param1=param1, param2=param2)
+    def match_city(self, param1,  param2):
+         with self._driver.session() as session:
+             return session.write_transaction(self.user_to_city, param1, param2)
+    
+    def user_to_music(cls, tx, param1, param2):
+        tx.run("MATCH (a:User) WHERE a.name = $param1 "
+                "MATCH (b:Music) WHERE b.genre = $param2 "
+                "MERGE (a)-[:LISTEN]->(b)",
+            param1=param1, param2=param2)
+    def match_music(self, param1,  param2):
+         with self._driver.session() as session:
+             return session.write_transaction(self.user_to_music, param1, param2)
 
     #Crea un nodo segun el tipo indicado
     def add_user(self, name, user, password, age, num):
@@ -22,8 +48,9 @@ class Database(object):
             return session.write_transaction(self.create_user_node, name, user, password, age, num)
     @staticmethod
     def create_user_node(tx, name, user, password, age, num):
-        return tx.run("CREATE (u:User {name: $name, user: $user, password: $password, age: $age, num: $num}) RETURN id(u)",
-         name=name, user=user, password=password, age=age, num=num).single().value()
+        tx.run("CREATE (:User {name: $name, user: $user, password: $password, age: $age, num: $num})",
+         name=name, user=user, password=password, age=age, num=num)
+
     def verifyAccount(self, user, password):
         results=[]
         matchQuery = "MATCH (u:User {user: '" + user + "', password: '" + password + "'}) RETURN u"
@@ -37,7 +64,7 @@ class Database(object):
     def verifyExistence(self, nodeType, param):
         if(nodeType == "Music"):
             results=[]
-            matchQuery = "MATCH (m:Music {type: '" + param + "'}) RETURN m"
+            matchQuery = "MATCH (x:Music {genre: '" + param + "'}) RETURN x"
                 # Execute the CQL query
             with self._driver.session() as graphDB_Session:
                 nodes = graphDB_Session.run(matchQuery)
@@ -46,7 +73,7 @@ class Database(object):
                 return results
         if(nodeType == "Movie"):
             results=[]
-            matchQuery = "MATCH (p:Movie {type: '" + param + "'}) RETURN p"
+            matchQuery = "MATCH (x:Movie {genre: '" + param + "'}) RETURN x"
                 # Execute the CQL query
             with self._driver.session() as graphDB_Session:
                 nodes = graphDB_Session.run(matchQuery)
@@ -55,7 +82,7 @@ class Database(object):
                 return results
         if(nodeType == "Food"):
             results=[]
-            matchQuery = "MATCH (f:Food {type: '" + param + "'}) RETURN f"
+            matchQuery = "MATCH (x:Food {type: '" + param + "'}) RETURN x"
                 # Execute the CQL query
             with self._driver.session() as graphDB_Session:
                 nodes = graphDB_Session.run(matchQuery)
@@ -64,7 +91,7 @@ class Database(object):
                 return results
         if(nodeType == "City"):
             results=[]
-            matchQuery = "MATCH (c:City {name: '" + param + "'}) RETURN c"
+            matchQuery = "MATCH (x:City {name: '" + param + "'}) RETURN x"
                 # Execute the CQL query
             with self._driver.session() as graphDB_Session:
                 nodes = graphDB_Session.run(matchQuery)
@@ -72,38 +99,64 @@ class Database(object):
                     results.append(node) #Adds all the matching nodes, meaning that if len(results) > 0, there's at least one match
                 return results
 
+    #def add_food(self, typeOfFood):
+     #   with self._driver.session() as session:
+      #      return session.write_transaction(self.create_food_node, typeOfFood)
+    #@staticmethod
+    #def create_food_node(tx, typeOfFood):
+     #   tx.run("CREATE (:Food {typeOfFood: $typeOfFood})",
+      #   typeOfFood=typeOfFood)
 
-            
-    @staticmethod
-    def _Default(tx,result):
-        return tx.run(result)
 
-    @staticmethod
-    def _getNodes(tx,result,value):
-        return tx.run(result,value=value)
+    #def add_movie(self, genre):
+     #   with self._driver.session() as session:
+      #      return session.write_transaction(self.create_movie_node, genre)
+    #@staticmethod
+    #def create_movie_node(tx, genre):
+     #   tx.run("CREATE (:Movie {genre: $genre})",
+      #   genre=genre)
 
-    @staticmethod
-    def _getNode(tx,result,value):
-        return tx.run(result,value=value)
+    #def add_music(self, genre):
+     #   with self._driver.session() as session:
+      #      return session.write_transaction(self.create_music_node, genre)
+    #@staticmethod
+    #def create_music_node(tx, genre):
+     #   tx.run("CREATE (:Music {genre: $genre})",
+      #   genre=genre)     
 
-    @staticmethod
-    def _upgrade(tx,result,value,newValue):
-        result = tx.run(result,value=value,newValue=newValue)
+    #def add_city(self, name):
+     #   with self._driver.session() as session:
+      #      return session.write_transaction(self.create_city_node, name)
+    #@staticmethod
+    #def create_city_node(tx, name):
+     #   tx.run("CREATE (:City {name: $name})",
+      #   name=name)
 
-    @staticmethod
-    def _deleteLink(tx,result,variable1,variable2):
-        result = tx.run(result,variable1=variable1,variable2=variable2) 
+    def make_a_match(self, relation, param1, param2):
+        with self._driver.session() as session:
+            return session.write_transaction(self.create_a_match, relation, param1, param2)
+                    
 
-    @staticmethod
-    def _delete(tx,result,value):
-        result = tx.run(result,value=value)            
-
-    @staticmethod
-    def _connect(tx,result,variable1,variable2):
-        result = tx.run(result,variable1=variable1,variable2=variable2) 
-
-    """This method is used by write"""
-    @staticmethod
-    def _create(tx,arguments,result):
-        result = tx.run(result,arguments=arguments)        
+    def create_a_match(cls, tx, relation, param1, param2):
+        if(relation == "userToFood"):
+           tx.run("MATCH (a:User) WHERE a.name = $param1 "
+           "MERGE (b:Food {typeOfFood: $param2})"
+           "MERGE (a)-[:LIKES]->(b)",
+           param1=param1, param2=param2)
+        elif(relation == "userToMovie"):
+            tx.run("MATCH (a:User) WHERE a.name = $param1 "
+                    "MERGE (b:Movie {genre: $param2})"
+                    "MERGE (a)-[:WATCH]->(b)",
+                    param1=param1,param2=param2)
+        elif(relation == "userToMusic"):
+            tx.run("MATCH (a:User) WHERE a.name = $param1 "
+                    "MERGE (b:Music {genre: $param2})"
+                    "MERGE (a)-[:LISTEN]->(b)",
+                    param1=param1,param2=param2)
+        elif(relation == "userToCity"):
+            tx.run("MATCH (a:User) WHERE a.name = $param1 "
+                    "MERGE (b:City {name: $param2})"
+                    "MERGE (a)-[:LIVES_IN]->(b)",
+                    param1=param1,param2=param2)                
+             
 
