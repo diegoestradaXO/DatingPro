@@ -1,7 +1,9 @@
 # DatingPro
 Proyecto de Algoritmos y Estructura de Datos. Motor de Recomendación utilizando base de datos basada en grafos (Neo4J)
-                      Pasos para instalar el sistema de recomendaciones (Dating-Pro)
-                           _____________________________________________________
+                     
+                     
+                     
+                                  Pasos para instalar el sistema de recomendaciones (Dating-Pro)
 Instalar python:
 1. Escribir python en el buscador.
 2. Hacer click en python.3x y hacer click en “Go to folder”. 
