@@ -21,11 +21,9 @@ Instalación de Neo4j:
 4. Escribir “server connect” en la parte superior de la ventana. 
 5. Asegurarse que el que el URL sea  bolt://localhost:7687.
 6. Ir al folder: Dating-Pro descargado de GitHub.
-7. Copiar el contenido de la base de datos que se encontrará en el .rar.
+7. Copiar el contenido de la base de datos que se encontrará en el .rar: https://drive.google.com/file/d/1GArIPU03cVJo6kWMQNeWJkR70A2Ly-Fy/view?usp=sharing.
 8. Hacer click en correr. 
 9. Esperar a que se conecte y minimizar Neo4j.
-
-
 
 Correr el programa:
 1. En el folder Dating-Pro.
