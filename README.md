@@ -11,9 +11,8 @@ Instalar python:
 4. Seguir el tutorial: https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/
 5. En el inciso anterior, copie la dirección que se obtuvo en el paso número 3.
 6. Presionar Windows + R en el teclado, escribir “cmd”, y luego enter. 
-7. Escribir “python -m pip install Tkinder”, presionar enter y esperar que se instale.
-8. Escribir “python -m pip install neo4j”, presionar enter y esperar que se instale.
-9. Cerrar el cmd. 
+7. Escribir “python -m pip install neo4j”, presionar enter y esperar que se instale.
+8. Cerrar el cmd. 
 
 Instalación de Neo4j:
 1. Hacer click en “Add Graph” y seleccionar “Create Local Graph” .
